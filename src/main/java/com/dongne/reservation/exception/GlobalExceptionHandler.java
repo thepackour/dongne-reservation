@@ -1,76 +1,56 @@
 package com.dongne.reservation.exception;
 
 import com.dongne.reservation.common.response.ApiResponse;
-import com.dongne.reservation.common.response.ErrorDetail;
-import com.dongne.reservation.common.response.Meta;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.Instant;
-import java.util.UUID;
+import java.util.List;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // 잘못된 요청 처리
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ApiResponse<Void>> handleBadRequest(IllegalArgumentException ex) {
-        ApiResponse<Void> response = new ApiResponse<>();
-        response.setSuccess(false);
-        response.setData(null);
-
-        ErrorDetail errorDetail = new ErrorDetail();
-        errorDetail.setCode("INVALID_ARGUMENT");
-        errorDetail.setMessage(ex.getMessage());
-        response.setErrorDetail(errorDetail);
-
-        Meta meta = new Meta();
-        meta.setTimestamp(Instant.now().toString());
-        meta.setRequestId(UUID.randomUUID().toString());
-        response.setMeta(meta);
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    // 이메일 중복
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ApiResponse<?>> handleDuplicateEmail(Exception e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ApiResponse<>(HttpStatus.CONFLICT.value(), e.getMessage()));
     }
 
-    // 인증/권한 문제 처리
-    @ExceptionHandler(SecurityException.class)
-    public ResponseEntity<ApiResponse<Void>> handleForbidden(SecurityException ex) {
-        ApiResponse<Void> response = new ApiResponse<>();
-        response.setSuccess(false);
-        response.setData(null);
+    // @Email 검증
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiResponse<?>> handleIllegalArgument(MethodArgumentNotValidException e) {
+        List<String> details = e.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(FieldError::getDefaultMessage)
+                .toList();
 
-        ErrorDetail errorDetail = new ErrorDetail();
-        errorDetail.setCode("FORBIDDEN");
-        errorDetail.setMessage("권한이 없습니다.");
-        response.setErrorDetail(errorDetail);
+        String message = "잘못된 요청입니다. (" + String.join(", ", details) + ")";
 
-        Meta meta = new Meta();
-        meta.setTimestamp(Instant.now().toString());
-        meta.setRequestId(UUID.randomUUID().toString());
-        response.setMeta(meta);
-
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+        return ResponseEntity.badRequest()
+                .body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), message));
     }
 
-    // 서버 내부 오류 처리
+    // 400
+    @ExceptionHandler({
+            IllegalArgumentException.class,
+            BindException.class,
+            MissingServletRequestParameterException.class })
+    public ResponseEntity<ApiResponse<?>> handleIllegalArgument(Exception e) {
+        return ResponseEntity.badRequest()
+                .body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "잘못된 요청입니다."));
+    }
+
+    // 500
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ApiResponse<Void>> handleServerError(Exception ex) {
-        ApiResponse<Void> response = new ApiResponse<>();
-        response.setSuccess(false);
-        response.setData(null);
-
-        ErrorDetail errorDetail = new ErrorDetail();
-        errorDetail.setCode("INTERNAL_SERVER_ERROR");
-        errorDetail.setMessage("서버 내부 오류가 발생했습니다.");
-        response.setErrorDetail(errorDetail);
-
-        Meta meta = new Meta();
-        meta.setTimestamp(Instant.now().toString());
-        meta.setRequestId(UUID.randomUUID().toString());
-        response.setMeta(meta);
-
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    public ResponseEntity<ApiResponse<?>> handleGeneralException(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ApiResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), "서버 오류가 발생했습니다."));
     }
 }
