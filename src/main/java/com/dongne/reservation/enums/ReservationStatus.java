@@ -1,5 +1,5 @@
 package com.dongne.reservation.enums;
 
 public enum ReservationStatus {
-    CONFIRMED, CANCELED
+    CONFIRMED, CANCELED, EXPIRED
 }
