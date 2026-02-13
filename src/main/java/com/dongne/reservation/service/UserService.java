@@ -6,7 +6,6 @@ import com.dongne.reservation.exception.DuplicateEmailException;
 import com.dongne.reservation.repository.UserRepository;
 import com.dongne.reservation.web.dto.SignupRequest;
 import com.dongne.reservation.web.dto.SignupResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -41,5 +40,4 @@ public class UserService {
         signupResponse.setEmail(res.getEmail());
         return signupResponse;
     }
-
 }
