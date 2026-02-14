@@ -65,8 +65,8 @@ public class MockDataInitializer implements CommandLineRunner {
         // place
         for (int i = 0; i < 16; i++) {
             Place place = Place.builder()
-                    .name(String.valueOf('A' + i))
-                    .type("type_" + ('a' + i))
+                    .name(String.valueOf((char)('A' + i)))
+                    .type("type_" + (char)('a' + i))
                     .status(Math.random() > 0.5 ? PlaceStatus.OPEN : PlaceStatus.CLOSED)
                     .capacity((int) (Math.random() * 3 + 1))
                     .rating((float) (Math.random() * 5))
