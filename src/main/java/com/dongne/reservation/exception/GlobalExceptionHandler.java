@@ -40,7 +40,7 @@ public class GlobalExceptionHandler {
     // 비밀번호 오류
     @ExceptionHandler(LoginFailedException.class)
     public ResponseEntity<ApiResponse<?>> handleIllegalArgument(LoginFailedException e) {
-        return ResponseEntity.badRequest()
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), e.getMessage()));
     }
 
