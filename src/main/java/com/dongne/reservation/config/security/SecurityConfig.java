@@ -2,6 +2,7 @@ package com.dongne.reservation.config.security;
 
 import com.dongne.reservation.jwt.JwtAuthenticationFilter;
 import com.dongne.reservation.jwt.JwtTokenProvider;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

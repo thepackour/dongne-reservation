@@ -1,12 +1,14 @@
 package com.dongne.reservation.domain;
 
 import com.dongne.reservation.domain.common.BaseEntity;
+import com.dongne.reservation.enums.UserRole;
 import com.dongne.reservation.enums.UserStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.usertype.UserType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -37,5 +39,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user",  cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Reservation> reservationList;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
 }

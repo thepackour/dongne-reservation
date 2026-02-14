@@ -1,8 +1,6 @@
 package com.dongne.reservation.exception;
 
 import com.dongne.reservation.common.response.ApiResponse;
-import com.dongne.reservation.web.controller.AuthController;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -10,7 +8,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
@@ -38,6 +35,13 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest()
                 .body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), message));
+    }
+
+    // 비밀번호 오류
+    @ExceptionHandler(LoginFailedException.class)
+    public ResponseEntity<ApiResponse<?>> handleIllegalArgument(LoginFailedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), e.getMessage()));
     }
 
     // 400
