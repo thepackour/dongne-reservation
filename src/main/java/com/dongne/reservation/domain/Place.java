@@ -36,4 +36,7 @@ public class Place extends BaseEntity {
     @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Timeslot> timeslotList;
 
+    @NotNull
+    private Float rating;
+
 }
