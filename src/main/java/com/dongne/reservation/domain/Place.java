@@ -39,4 +39,7 @@ public class Place extends BaseEntity {
     @NotNull
     private Float rating;
 
+    @NotNull // 예약 수 기준 정렬 때문에 추가
+    private Integer rsvCount;
+
 }
