@@ -1,5 +1,7 @@
 package com.dongne.reservation.service;
 
+import com.dongne.reservation.domain.Place;
+import com.dongne.reservation.exception.NotFoundException;
 import com.dongne.reservation.repository.JpaPlaceRepository;
 import com.dongne.reservation.repository.SpringDataJpaPlaceRepository;
 import com.dongne.reservation.web.dto.PlaceResponse;
@@ -22,5 +24,12 @@ public class PlaceService {
     public Page<PlaceResponse> getPlaces(Pageable pageable) {
         return springDataJpaPlaceRepository.findAll(pageable)
                 .map(PlaceResponse::from);
+    }
+
+    public PlaceResponse getPlaceById(Long id) {
+        Place res = springDataJpaPlaceRepository.findById(id).orElseThrow(() -> {
+            throw new NotFoundException("장소 조회에 실패했습니다.");
+        });
+        return PlaceResponse.from(res);
     }
 }
