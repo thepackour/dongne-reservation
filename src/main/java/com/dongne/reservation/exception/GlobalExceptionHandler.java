@@ -44,6 +44,13 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), e.getMessage()));
     }
 
+    // 존재하지 않는 리소스 조회
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ApiResponse<?>> handleNotFound(NotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ApiResponse<>(HttpStatus.NOT_FOUND.value(), e.getMessage()));
+    }
+
     // 400
     @ExceptionHandler({
             IllegalArgumentException.class,

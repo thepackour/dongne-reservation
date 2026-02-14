@@ -28,7 +28,7 @@ public class PlaceService {
 
     public PlaceResponse getPlaceById(Long id) {
         Place res = springDataJpaPlaceRepository.findById(id).orElseThrow(() -> {
-            throw new NotFoundException("Place not found with id " + id);
+            throw new NotFoundException("장소 조회에 실패했습니다.");
         });
         return PlaceResponse.from(res);
     }
