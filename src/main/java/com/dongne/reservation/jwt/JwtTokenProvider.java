@@ -4,16 +4,26 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
 @Component
 public class JwtTokenProvider {
 
-    private final String secretKey = "mySecretKey";
-    private final long validityInMs = 3600000; // 1시간
+    private final SecretKey secretKey;
+    private final long validityInMs; // 1시간
+
+    public JwtTokenProvider(@Value("${jwt.secret}") String base64Secret,
+                            @Value("${jwt.expiration-ms}") long expirationMs) {
+        this.secretKey = Keys.hmacShaKeyFor(Base64.getDecoder().decode(base64Secret));
+        this.validityInMs = expirationMs;
+    }
 
     // 토큰 생성
     public String createToken(String username, List<String> roles) {
@@ -27,7 +37,7 @@ public class JwtTokenProvider {
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
-                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .signWith(secretKey)
                 .compact();
     }
 
