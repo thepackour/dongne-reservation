@@ -16,6 +16,7 @@ public class PlaceResponse {
     private String type;
     private Integer capacity;
     private Float rating;
+    private Integer rsvCount;
 
     public static PlaceResponse from(Place place) {
         return PlaceResponse.builder()
@@ -24,6 +25,7 @@ public class PlaceResponse {
                 .type(place.getType())
                 .capacity(place.getCapacity())
                 .rating(place.getRating())
+                .rsvCount(place.getRsvCount())
                 .build();
     }
 }
