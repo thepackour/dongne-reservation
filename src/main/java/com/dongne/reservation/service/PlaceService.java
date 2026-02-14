@@ -13,12 +13,9 @@ import org.springframework.stereotype.Service;
 public class PlaceService {
 
     private final SpringDataJpaPlaceRepository springDataJpaPlaceRepository;
-    private final JpaPlaceRepository jpaPlaceRepository;
 
-    public PlaceService(SpringDataJpaPlaceRepository springDataJpaPlaceRepository,
-                        JpaPlaceRepository jpaPlaceRepository) {
+    public PlaceService(SpringDataJpaPlaceRepository springDataJpaPlaceRepository) {
         this.springDataJpaPlaceRepository = springDataJpaPlaceRepository;
-        this.jpaPlaceRepository = jpaPlaceRepository;
     }
 
     public Page<PlaceResponse> getPlaces(Pageable pageable) {
@@ -27,9 +24,7 @@ public class PlaceService {
     }
 
     public PlaceResponse getPlaceById(Long id) {
-        Place res = springDataJpaPlaceRepository.findById(id).orElseThrow(() -> {
-            throw new NotFoundException("장소 조회에 실패했습니다.");
-        });
+        Place res = springDataJpaPlaceRepository.findById(id).orElseThrow(() -> new NotFoundException("장소 조회에 실패했습니다."));
         return PlaceResponse.from(res);
     }
 }
