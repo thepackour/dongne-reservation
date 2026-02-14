@@ -36,4 +36,12 @@ public class Place extends BaseEntity {
     @OneToMany(mappedBy = "place", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Timeslot> timeslotList;
 
+    @NotNull
+    private Float rating;
+
+    @NotNull // 예약 수 기준 정렬 때문에 추가
+    private Integer rsvCount;
+
+    public void increaseRsvCount() { this.rsvCount++; }
+    public void decreaseRsvCount() { this.rsvCount--; }
 }
