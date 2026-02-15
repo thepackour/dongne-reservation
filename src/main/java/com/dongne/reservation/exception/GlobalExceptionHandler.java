@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.util.List;
 
@@ -84,7 +85,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({
             IllegalArgumentException.class,
             BindException.class,
-            MissingServletRequestParameterException.class })
+            MissingServletRequestParameterException.class,
+            MethodArgumentTypeMismatchException.class })
     public ResponseEntity<ApiResponse<?>> handleIllegalArgument(Exception e) {
         return ResponseEntity.badRequest()
                 .body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), "잘못된 요청입니다."));
