@@ -19,4 +19,7 @@ public class TimeslotRequest {
     @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime endAt;
+
+    @NotNull
+    private Integer slotCapacity;
 }
