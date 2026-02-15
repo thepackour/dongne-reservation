@@ -1,5 +1,6 @@
 package com.dongne.reservation.service;
 
+import com.dongne.reservation.domain.Reservation;
 import com.dongne.reservation.domain.User;
 import com.dongne.reservation.enums.ReservationStatus;
 import com.dongne.reservation.enums.UserRole;
@@ -8,6 +9,7 @@ import com.dongne.reservation.exception.DuplicateEmailException;
 import com.dongne.reservation.exception.LoginFailedException;
 import com.dongne.reservation.exception.NotFoundException;
 import com.dongne.reservation.jwt.JwtTokenProvider;
+import com.dongne.reservation.repository.SpringDataJpaReservationRepository;
 import com.dongne.reservation.repository.SpringDataJpaUserRepository;
 import com.dongne.reservation.repository.UserRepository;
 import com.dongne.reservation.web.dto.LoginRequest;
@@ -25,18 +27,22 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService {
+
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder pwEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final SpringDataJpaUserRepository springDataJpaUserRepository;
+    private final SpringDataJpaReservationRepository springDataJpaReservationRepository;
 
     public UserService(UserRepository userRepository,
                        BCryptPasswordEncoder pwEncoder,
-                       JwtTokenProvider jwtTokenProvider, SpringDataJpaUserRepository springDataJpaUserRepository) {
+                       JwtTokenProvider jwtTokenProvider, SpringDataJpaUserRepository springDataJpaUserRepository,
+                       SpringDataJpaReservationRepository springDataJpaReservationRepository) {
         this.userRepository = userRepository;
         this.pwEncoder = pwEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
         this.springDataJpaUserRepository = springDataJpaUserRepository;
+        this.springDataJpaReservationRepository = springDataJpaReservationRepository;
     }
 
     @Transactional(readOnly = true)
@@ -76,6 +82,10 @@ public class UserService {
     public List<ReservationResponse> getMyReservations(Pageable pageable, ReservationStatus status, String token) {
         User user = springDataJpaUserRepository.findByEmail(jwtTokenProvider.getUsername(token))
                 .orElseThrow(() -> new NotFoundException("유저를 찾을 수 없습니다."));
-        return user.getReservationList().stream().map(ReservationResponse::from).toList();
+
+        Page<Reservation> res;
+        if (status == null) res = springDataJpaReservationRepository.findByUser(user, pageable);
+        else res = springDataJpaReservationRepository.findByUserAndStatus(user, status, pageable);
+        return res.stream().map(ReservationResponse::from).toList();
     }
 }
