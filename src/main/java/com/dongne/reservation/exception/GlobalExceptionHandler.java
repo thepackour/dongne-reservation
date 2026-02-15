@@ -65,6 +65,13 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>(HttpStatus.CONFLICT.value(), e.getMessage()));
     }
 
+    // 최대 예약 수 초과
+    @ExceptionHandler(SlotCapacityExceededException.class)
+    public ResponseEntity<ApiResponse<?>> handleSlotCapacityExceeded(SlotCapacityExceededException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ApiResponse<>(HttpStatus.CONFLICT.value(), e.getMessage()));
+    }
+
     // 400
     @ExceptionHandler({
             IllegalArgumentException.class,
