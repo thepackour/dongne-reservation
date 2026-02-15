@@ -51,7 +51,8 @@ public class TimeslotService {
     public TimeslotResponse createTimeslot(Long id, TimeslotRequest request) {
         // 예외 처리 (존재하지 않는 장소, 시간 겹침, 최대 예약 인원 범위 초과)
         if (!existsPlaceById(id)) throw new NotFoundException("장소를 찾을 수 없습니다.");
-        if (request.getStartAt().isAfter(request.getEndAt())) throw new InvalidDateTimeRangeException("'startAt'은 'endAt' 이전이어야 합니다.");
+        if (request.getStartAt().isAfter(request.getEndAt()))
+            throw new InvalidDateTimeRangeException("'startAt'은 'endAt' 이전이어야 합니다.");
         if (springDataJpaTimeslotRepository
                 .existsTimeslotByPlaceIdAndEndAtGreaterThanEqualAndStartAtLessThan(id, request.getStartAt(), request.getEndAt()))
             throw new DuplicateTimeslotException("시간이 겹치는 예약이 존재합니다.");
