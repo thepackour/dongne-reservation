@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/users/signup", "/users/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/places/*/timeslots").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/places/*/reservations").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),

@@ -1,9 +1,11 @@
 package com.dongne.reservation.service;
 
+import com.dongne.reservation.domain.Place;
 import com.dongne.reservation.domain.Reservation;
 import com.dongne.reservation.domain.Timeslot;
 import com.dongne.reservation.domain.User;
 import com.dongne.reservation.enums.ReservationStatus;
+import com.dongne.reservation.exception.InvalidDateTimeRangeException;
 import com.dongne.reservation.exception.NotFoundException;
 import com.dongne.reservation.exception.SlotCapacityExceededException;
 import com.dongne.reservation.jwt.JwtTokenProvider;
@@ -16,6 +18,12 @@ import com.dongne.reservation.web.dto.UpdateReservationRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class ReservationService {
@@ -111,6 +119,39 @@ public class ReservationService {
         Reservation res = springDataJpaReservationRepository.save(reservation);
 
         return ReservationResponse.from(res);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReservationResponse> getReservationsByPlace(
+            Long placeId, LocalDate before, LocalDate after) {
+        Place place = springDataJpaPlaceRepository.findById(placeId)
+                .orElseThrow(() -> new NotFoundException("장소를 찾을 수 없습니다."));
+
+        List<Reservation> rsvList = place.getTimeslotList().stream()
+                .flatMap(timeslot -> timeslot.getReservationList().stream())
+                .collect(Collectors.toList());
+        List<Reservation> filteredRsvList;
+        if (before != null && after != null) {
+            if (after.isAfter(before)) throw new InvalidDateTimeRangeException("query parameter 'before'은 'after' 이전이어야 합니다.");
+            filteredRsvList = rsvList.stream()
+                    .filter(rsv -> {
+                        LocalDateTime startAt = rsv.getStartAt();
+                        boolean cond1 = startAt.isBefore(before.atTime(23,59,59));
+                        boolean cond2 = startAt.isAfter(after.atStartOfDay());
+                        return cond1 && cond2; })
+                    .collect(Collectors.toList());
+        } else if (before != null) {
+            filteredRsvList = rsvList.stream()
+                    .filter(rsv -> rsv.getStartAt().isBefore(before.atTime(23,59,59)) )
+                    .collect(Collectors.toList());
+        } else if (after != null) {
+            filteredRsvList = rsvList.stream()
+                    .filter(rsv -> rsv.getStartAt().isAfter(after.atStartOfDay()) )
+                    .collect(Collectors.toList());
+        } else filteredRsvList = rsvList;
+        return filteredRsvList.stream()
+                .map(ReservationResponse::from)
+                .collect(Collectors.toList());
     }
 
     private boolean existsPlaceById(Long placeId) {
