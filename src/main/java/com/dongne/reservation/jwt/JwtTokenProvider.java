@@ -40,7 +40,7 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    // 토큰에서 사용자 이름 추출
+    // 토큰에서 사용자 이름(이메일) 추출
     public String getUsername(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(secretKey)
