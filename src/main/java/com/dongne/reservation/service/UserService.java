@@ -1,33 +1,42 @@
 package com.dongne.reservation.service;
 
 import com.dongne.reservation.domain.User;
+import com.dongne.reservation.enums.ReservationStatus;
 import com.dongne.reservation.enums.UserRole;
 import com.dongne.reservation.enums.UserStatus;
 import com.dongne.reservation.exception.DuplicateEmailException;
 import com.dongne.reservation.exception.LoginFailedException;
+import com.dongne.reservation.exception.NotFoundException;
 import com.dongne.reservation.jwt.JwtTokenProvider;
+import com.dongne.reservation.repository.SpringDataJpaUserRepository;
 import com.dongne.reservation.repository.UserRepository;
 import com.dongne.reservation.web.dto.LoginRequest;
+import com.dongne.reservation.web.dto.ReservationResponse;
 import com.dongne.reservation.web.dto.SignupRequest;
 import com.dongne.reservation.web.dto.SignupResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder pwEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final SpringDataJpaUserRepository springDataJpaUserRepository;
 
     public UserService(UserRepository userRepository,
                        BCryptPasswordEncoder pwEncoder,
-                       JwtTokenProvider jwtTokenProvider) {
+                       JwtTokenProvider jwtTokenProvider, SpringDataJpaUserRepository springDataJpaUserRepository) {
         this.userRepository = userRepository;
         this.pwEncoder = pwEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.springDataJpaUserRepository = springDataJpaUserRepository;
     }
 
     @Transactional(readOnly = true)
@@ -61,5 +70,12 @@ public class UserService {
         if (!pwEncoder.matches(request.getPassword(), user.getPassword())) throw new LoginFailedException("비밀번호가 틀렸습니다.");
 
         return jwtTokenProvider.createToken(user.getEmail(), List.of(user.getRole().toString()));
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReservationResponse> getMyReservations(Pageable pageable, ReservationStatus status, String token) {
+        User user = springDataJpaUserRepository.findByEmail(jwtTokenProvider.getUsername(token))
+                .orElseThrow(() -> new NotFoundException("유저를 찾을 수 없습니다."));
+        return user.getReservationList().stream().map(ReservationResponse::from).toList();
     }
 }
