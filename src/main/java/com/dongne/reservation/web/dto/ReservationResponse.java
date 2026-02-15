@@ -61,7 +61,7 @@ public class ReservationResponse {
     private String placeName;
 
 
-    public ReservationResponse from(Reservation reservation) {
+    public static ReservationResponse from(Reservation reservation) {
         User user = reservation.getUser();
         Timeslot timeslot = reservation.getTimeslot();
         return ReservationResponse.builder()
