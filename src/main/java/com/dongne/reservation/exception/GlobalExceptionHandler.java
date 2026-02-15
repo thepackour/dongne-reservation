@@ -3,6 +3,7 @@ package com.dongne.reservation.exception;
 import com.dongne.reservation.common.response.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -70,6 +71,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<?>> handleSlotCapacityExceeded(SlotCapacityExceededException e) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(new ApiResponse<>(HttpStatus.CONFLICT.value(), e.getMessage()));
+    }
+
+    // 예약 변경 시 본인 확인 오류
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ApiResponse<?>> handleAccessDenied(AccessDeniedException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ApiResponse<>(HttpStatus.UNAUTHORIZED.value(), e.getMessage()));
     }
 
     // 400

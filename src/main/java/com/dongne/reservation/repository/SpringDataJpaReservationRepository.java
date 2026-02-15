@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Primary
-public interface SpringDataJpaReservationRepository extends JpaRepository<Reservation, Integer> {
+public interface SpringDataJpaReservationRepository extends JpaRepository<Reservation, Long> {
 
 }

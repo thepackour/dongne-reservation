@@ -25,6 +25,7 @@ public class Reservation extends BaseEntity {
     @JoinColumn(name = "timeslot_id", nullable = false)
     private Timeslot timeslot;
 
+    @Setter
     @NotNull
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
