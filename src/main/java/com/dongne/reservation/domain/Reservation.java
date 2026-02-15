@@ -31,6 +31,7 @@ public class Reservation extends BaseEntity {
 
     // Timeslot에 place 정보가 있으므로 place 필드를 굳이 쓸 필요는 없는듯
     // 오히려 place 필드가 있으면 place 정보가 변경되었을 때 참조하는 모든 reservation의 필드를 변경해야 함
+    public Long getPlaceId() { return timeslot.getPlace().getId(); }
     public String getPlaceName() { return timeslot.getPlace().getName(); }
 
 }
