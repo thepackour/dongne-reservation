@@ -54,8 +54,15 @@ public class GlobalExceptionHandler {
     // query string 날짜 범위 오류
     @ExceptionHandler(InvalidDateTimeRangeException.class)
     public ResponseEntity<ApiResponse<?>> handleInvalidDateTimeRange(InvalidDateTimeRangeException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.badRequest()
                 .body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+    }
+
+    // 예약 슬롯 시간 겹침
+    @ExceptionHandler(DuplicateTimeslotException.class)
+    public ResponseEntity<ApiResponse<?>> handleDuplicateTimeslot(DuplicateTimeslotException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ApiResponse<>(HttpStatus.CONFLICT.value(), e.getMessage()));
     }
 
     // 400

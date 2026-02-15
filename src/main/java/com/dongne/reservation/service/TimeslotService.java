@@ -1,16 +1,13 @@
 package com.dongne.reservation.service;
 
-import com.dongne.reservation.domain.Place;
 import com.dongne.reservation.domain.Timeslot;
+import com.dongne.reservation.exception.DuplicateTimeslotException;
 import com.dongne.reservation.exception.InvalidDateTimeRangeException;
 import com.dongne.reservation.exception.NotFoundException;
-import com.dongne.reservation.repository.JpaPlaceRepository;
 import com.dongne.reservation.repository.SpringDataJpaPlaceRepository;
 import com.dongne.reservation.repository.SpringDataJpaTimeslotRepository;
-import com.dongne.reservation.web.dto.PlaceResponse;
+import com.dongne.reservation.web.dto.TimeslotRequest;
 import com.dongne.reservation.web.dto.TimeslotResponse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -32,7 +29,7 @@ public class TimeslotService {
     }
 
     public List<TimeslotResponse> getTimeslotsByPlaceId(Long id, LocalDate before, LocalDate after) {
-        if (!springDataJpaPlaceRepository.existsById(id)) throw new NotFoundException("장소를 찾을 수 없습니다.");
+        if (!existsPlaceById(id)) throw new NotFoundException("장소를 찾을 수 없습니다.");
 
         List<Timeslot> timeslotList;
         if (before != null && after != null) {
@@ -49,5 +46,32 @@ public class TimeslotService {
         return timeslotList.stream()
                 .map(TimeslotResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public TimeslotResponse createTimeslot(Long id, TimeslotRequest request) {
+        // 예외 처리 (존재하지 않는 장소, 시간 겹침, 최대 예약 인원 범위 초과)
+        if (!existsPlaceById(id)) throw new NotFoundException("장소를 찾을 수 없습니다.");
+        if (request.getStartAt().isAfter(request.getEndAt())) throw new InvalidDateTimeRangeException("'startAt'은 'endAt' 이전이어야 합니다.");
+        if (springDataJpaTimeslotRepository
+                .existsTimeslotByPlaceIdAndEndAtGreaterThanEqualAndStartAtLessThan(id, request.getStartAt(), request.getEndAt()))
+            throw new DuplicateTimeslotException("시간이 겹치는 예약이 존재합니다.");
+        int slotCapacity = request.getSlotCapacity();
+        if (slotCapacity < 1) throw new IllegalArgumentException("'slotCapacity'는 1 이상이어야 합니다.");
+
+        // 객체 생성 및 저장
+        Timeslot timeslot = Timeslot.builder()
+                .place(springDataJpaPlaceRepository.findById(id)
+                        .orElseThrow(() -> new NotFoundException("장소를 찾을 수 없습니다.")))
+                .startAt(request.getStartAt())
+                .endAt(request.getEndAt())
+                .slotCapacity(request.getSlotCapacity())
+                .isOpen(false)
+                .build();
+        Timeslot res = springDataJpaTimeslotRepository.save(timeslot);
+        return TimeslotResponse.from(res);
+    }
+
+    private boolean existsPlaceById(Long id) {
+        return springDataJpaPlaceRepository.existsById(id);
     }
 }
