@@ -38,7 +38,7 @@ public class Timeslot extends BaseEntity {
     @Column(name = "is_open")
     private Boolean isOpen;
 
-    @OneToOne(mappedBy = "timeslot", cascade = CascadeType.ALL)
-    private Reservation reservation;
+    @OneToMany(mappedBy = "timeslot", cascade = CascadeType.ALL)
+    private List<Reservation> reservationList;
 
 }

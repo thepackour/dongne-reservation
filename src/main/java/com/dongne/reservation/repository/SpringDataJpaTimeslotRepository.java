@@ -9,10 +9,11 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Primary
-public interface SpringDataJpaTimeslotRepository extends JpaRepository<Timeslot, Integer> {
+public interface SpringDataJpaTimeslotRepository extends JpaRepository<Timeslot, Long> {
     List<Timeslot> findByPlaceIdAndStartAtBetween(Long placeId, LocalDateTime before, LocalDateTime after);
     List<Timeslot> findByPlaceIdAndStartAtGreaterThanEqual(Long placeId, LocalDateTime after);
     List<Timeslot> findByPlaceIdAndStartAtLessThanEqual(Long placeId, LocalDateTime before);
