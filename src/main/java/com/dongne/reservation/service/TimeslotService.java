@@ -1,16 +1,11 @@
 package com.dongne.reservation.service;
 
-import com.dongne.reservation.domain.Place;
 import com.dongne.reservation.domain.Timeslot;
 import com.dongne.reservation.exception.InvalidDateTimeRangeException;
 import com.dongne.reservation.exception.NotFoundException;
-import com.dongne.reservation.repository.JpaPlaceRepository;
 import com.dongne.reservation.repository.SpringDataJpaPlaceRepository;
 import com.dongne.reservation.repository.SpringDataJpaTimeslotRepository;
-import com.dongne.reservation.web.dto.PlaceResponse;
 import com.dongne.reservation.web.dto.TimeslotResponse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -32,7 +27,7 @@ public class TimeslotService {
     }
 
     public List<TimeslotResponse> getTimeslotsByPlaceId(Long id, LocalDate before, LocalDate after) {
-        if (!springDataJpaPlaceRepository.existsById(id)) throw new NotFoundException("장소를 찾을 수 없습니다.");
+        if (!existsPlaceById(id)) throw new NotFoundException("장소를 찾을 수 없습니다.");
 
         List<Timeslot> timeslotList;
         if (before != null && after != null) {
@@ -49,5 +44,9 @@ public class TimeslotService {
         return timeslotList.stream()
                 .map(TimeslotResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    private boolean existsPlaceById(Long id) {
+        return springDataJpaPlaceRepository.existsById(id);
     }
 }
