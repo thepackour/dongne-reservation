@@ -18,4 +18,5 @@ public interface SpringDataJpaTimeslotRepository extends JpaRepository<Timeslot,
     List<Timeslot> findByPlaceIdAndStartAtGreaterThanEqual(Long placeId, LocalDateTime after);
     List<Timeslot> findByPlaceIdAndStartAtLessThanEqual(Long placeId, LocalDateTime before);
     List<Timeslot> findByPlaceId(Long placeId);
+    boolean existsTimeslotByPlaceIdAndEndAtGreaterThanEqualAndStartAtLessThan(Long placeId, LocalDateTime startAt, LocalDateTime endAt);
 }
