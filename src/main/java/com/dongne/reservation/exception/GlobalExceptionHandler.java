@@ -51,13 +51,6 @@ public class GlobalExceptionHandler {
                 .body(new ApiResponse<>(HttpStatus.NOT_FOUND.value(), e.getMessage()));
     }
 
-    // query string 날짜 범위 오류
-    @ExceptionHandler(InvalidDateTimeRangeException.class)
-    public ResponseEntity<ApiResponse<?>> handleInvalidDateTimeRange(InvalidDateTimeRangeException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ApiResponse<>(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
-    }
-
     // 400
     @ExceptionHandler({
             IllegalArgumentException.class,

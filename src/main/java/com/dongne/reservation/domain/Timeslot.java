@@ -34,7 +34,6 @@ public class Timeslot extends BaseEntity {
     @Column(name = "slot_capacity")
     private Integer slotCapacity;
 
-    @NotNull
     @Column(name = "is_open")
     private Boolean isOpen;
 
