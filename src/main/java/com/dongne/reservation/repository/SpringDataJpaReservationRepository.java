@@ -3,7 +3,6 @@ package com.dongne.reservation.repository;
 import com.dongne.reservation.domain.Reservation;
 import com.dongne.reservation.domain.User;
 import com.dongne.reservation.enums.ReservationStatus;
-import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
