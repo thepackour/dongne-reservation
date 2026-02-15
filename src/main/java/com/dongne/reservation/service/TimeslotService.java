@@ -23,15 +23,20 @@ import java.util.stream.Collectors;
 public class TimeslotService {
 
     private final SpringDataJpaTimeslotRepository springDataJpaTimeslotRepository;
+    private final SpringDataJpaPlaceRepository springDataJpaPlaceRepository;
 
-    public TimeslotService(SpringDataJpaTimeslotRepository springDataJpaTimeslotRepository) {
+    public TimeslotService(SpringDataJpaTimeslotRepository springDataJpaTimeslotRepository,
+                           SpringDataJpaPlaceRepository springDataJpaPlaceRepository) {
         this.springDataJpaTimeslotRepository = springDataJpaTimeslotRepository;
+        this.springDataJpaPlaceRepository = springDataJpaPlaceRepository;
     }
 
     public List<TimeslotResponse> getTimeslotsByPlaceId(Long id, LocalDate before, LocalDate after) {
+        if (!springDataJpaPlaceRepository.existsById(id)) throw new NotFoundException("장소를 찾을 수 없습니다.");
+
         List<Timeslot> timeslotList;
         if (before != null && after != null) {
-            if (before.isAfter(after)) throw new InvalidDateTimeRangeException("query parameter 'before'은 'after' 이전이어야 합니다.");
+            if (after.isAfter(before)) throw new InvalidDateTimeRangeException("query parameter 'before'은 'after' 이전이어야 합니다.");
             timeslotList = springDataJpaTimeslotRepository.findByPlaceIdAndStartAtBetween(id, before.atStartOfDay(), after.atTime(23,59,59));
         } else if (before != null) {
             timeslotList = springDataJpaTimeslotRepository.findByPlaceIdAndStartAtLessThanEqual(id, before.atStartOfDay());
