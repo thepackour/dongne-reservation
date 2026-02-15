@@ -9,6 +9,7 @@ import com.dongne.reservation.repository.SpringDataJpaTimeslotRepository;
 import com.dongne.reservation.web.dto.TimeslotRequest;
 import com.dongne.reservation.web.dto.TimeslotResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDate;
@@ -28,6 +29,7 @@ public class TimeslotService {
         this.springDataJpaPlaceRepository = springDataJpaPlaceRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<TimeslotResponse> getTimeslotsByPlaceId(Long id, LocalDate before, LocalDate after) {
         if (!existsPlaceById(id)) throw new NotFoundException("장소를 찾을 수 없습니다.");
 
@@ -48,6 +50,7 @@ public class TimeslotService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public TimeslotResponse createTimeslot(Long id, TimeslotRequest request) {
         // 예외 처리 (존재하지 않는 장소, 시간 겹침, 최대 예약 인원 범위 초과)
         if (!existsPlaceById(id)) throw new NotFoundException("장소를 찾을 수 없습니다.");
