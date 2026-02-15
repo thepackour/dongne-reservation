@@ -10,9 +10,9 @@ import com.dongne.reservation.repository.UserRepository;
 import com.dongne.reservation.web.dto.LoginRequest;
 import com.dongne.reservation.web.dto.SignupRequest;
 import com.dongne.reservation.web.dto.SignupResponse;
-import jakarta.validation.Valid;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,6 +30,7 @@ public class UserService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @Transactional(readOnly = true)
     public SignupResponse register(SignupRequest signupRequest) {
         // 이메일 중복 확인
         if (userRepository.findByEmail(signupRequest.getEmail()).isPresent()) {
@@ -53,6 +54,7 @@ public class UserService {
         return signupResponse;
     }
 
+    @Transactional(readOnly = true)
     public String login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new LoginFailedException("등록되지 않은 이메일입니다."));

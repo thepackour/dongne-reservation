@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @Repository
 @Primary
-@Transactional
 public interface SpringDataJpaUserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
 }
