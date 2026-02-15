@@ -2,9 +2,9 @@ package com.dongne.reservation.config.security;
 
 import com.dongne.reservation.jwt.JwtAuthenticationFilter;
 import com.dongne.reservation.jwt.JwtTokenProvider;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,6 +36,7 @@ public class SecurityConfig {
                 //.httpBasic(httpBasic -> httpBasic.disable())    // 기본 인증 비활성화
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/users/signup", "/users/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/places/*/timeslots").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
