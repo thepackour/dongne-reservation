@@ -99,12 +99,12 @@ public class MockDataInitializer implements CommandLineRunner {
         }
 
         // reservation
-        Set<Integer> timeslotSet = new HashSet<>();
+        Set<Long> timeslotSet = new HashSet<>();
         while (timeslotSet.size() < 3) {
-            int num = (int) (Math.random() * 32 + 1); // 1~10
+            Long num = (long) (Math.random() * 32 + 1); // 1~10
             timeslotSet.add(num);
         }
-        Iterator<Integer> iterator = timeslotSet.iterator();
+        Iterator<Long> iterator = timeslotSet.iterator();
         for (int i = 0; i < 3; i++) {
             Timeslot timeslot = springDataJpaTimeslotRepository.findById(iterator.next()).orElse(null);
             Reservation reservation = Reservation.builder()
