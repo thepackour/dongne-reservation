@@ -11,7 +11,6 @@ import com.dongne.reservation.repository.SpringDataJpaPlaceRepository;
 import com.dongne.reservation.repository.SpringDataJpaReservationRepository;
 import com.dongne.reservation.repository.SpringDataJpaTimeslotRepository;
 import com.dongne.reservation.repository.SpringDataJpaUserRepository;
-import com.dongne.reservation.web.dto.ReservationRequest;
 import com.dongne.reservation.web.dto.ReservationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,14 +39,16 @@ public class ReservationService {
     @Transactional
     public ReservationResponse createReservation(Long placeId,
                                                  Long timeslotId,
-                                                 ReservationRequest reservationRequest,
                                                  String token) {
         // 예외 처리 (존재하지 않는 장소)
         if (!existsPlaceById(placeId)) throw new NotFoundException("장소를 찾을 수 없습니다.");
 
         // 예외 처리 (존재하지 않는 예약 슬롯)
-        Timeslot timeslot = springDataJpaTimeslotRepository.findById(reservationRequest.getTimeslotId())
+        Timeslot timeslot = springDataJpaTimeslotRepository.findById(timeslotId)
                 .orElseThrow(() -> new NotFoundException("예약 슬롯을 찾을 수 없습니다."));
+
+        // 예외 처리 (다른 장소를 참조하는 예약 슬롯)
+        if (!timeslot.getPlace().getId().equals(placeId)) throw new NotFoundException("해당 장소에 속하지 않는 예약 슬롯입니다.");
 
         // 예외 처리 (존재하지 않는 유저)
         String email = jwtTokenProvider.getUsername(token);
