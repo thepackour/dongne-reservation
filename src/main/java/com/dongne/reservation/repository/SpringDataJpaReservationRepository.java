@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Primary
-@Transactional
 public interface SpringDataJpaReservationRepository extends JpaRepository<Reservation, Integer> {
 
 }

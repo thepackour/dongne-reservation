@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @Primary
-@Transactional
 public interface SpringDataJpaPlaceRepository extends JpaRepository<Place, Long> {
 
 }

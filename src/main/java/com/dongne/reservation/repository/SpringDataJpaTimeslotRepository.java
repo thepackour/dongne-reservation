@@ -12,7 +12,6 @@ import java.util.List;
 
 @Repository
 @Primary
-@Transactional
 public interface SpringDataJpaTimeslotRepository extends JpaRepository<Timeslot, Integer> {
     List<Timeslot> findByPlaceIdAndStartAtBetween(Long placeId, LocalDateTime before, LocalDateTime after);
     List<Timeslot> findByPlaceIdAndStartAtGreaterThanEqual(Long placeId, LocalDateTime after);

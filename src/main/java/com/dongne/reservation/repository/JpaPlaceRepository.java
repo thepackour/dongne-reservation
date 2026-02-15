@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-@Transactional
 public class JpaPlaceRepository implements PlaceRepository {
 
     private final EntityManager em;
