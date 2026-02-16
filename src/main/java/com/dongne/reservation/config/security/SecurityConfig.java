@@ -31,11 +31,11 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .formLogin(formLogin -> formLogin.disable())
+                //.formLogin(formLogin -> formLogin.disable())
                 //.formLogin(form -> form.loginProcessingUrl("/users/login"))
-                //.httpBasic(httpBasic -> httpBasic.disable())    // 기본 인증 비활성화
+                .httpBasic(httpBasic -> httpBasic.disable())    // 기본 인증 비활성화
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/users/signup", "/users/login").permitAll()
+                        .requestMatchers("/", "/users/signup", "/users/login", "/swagger-ui/**", "/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/places/*/timeslots").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/places/*/reservations").hasAuthority("ADMIN")
                         .anyRequest().authenticated()
