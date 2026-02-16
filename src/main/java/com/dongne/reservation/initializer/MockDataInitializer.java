@@ -44,6 +44,7 @@ public class MockDataInitializer implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) throws Exception {
+        Random random = new Random();
         // user
         UserData[] userDataArr = {
                 new UserData("admin@gmail.com", "therealadmin", "admin_user", UserStatus.ACTIVE, UserRole.ADMIN),
@@ -77,20 +78,20 @@ public class MockDataInitializer implements CommandLineRunner {
 
         // timeslot
         for (int i = 0; i < 16; i++) {
-            int day = LocalDateTime.now().getDayOfMonth() + (int) (Math.random() * 12);
+            int day = random.nextInt(30) + 1;
             int hour = (int) (Math.random() * 20);
             int min = Math.random() > 0.5 ? 0 : 30;
             Timeslot timeslot1 = Timeslot.builder()
                     .place(springDataJpaPlaceRepository.findById((long) (i + 1)).orElse(null))
-                    .startAt(LocalDateTime.of(2026, 2, day, hour, min))
-                    .endAt(LocalDateTime.of(2026, 2, day, hour + 2, min))
+                    .startAt(LocalDateTime.of(2026, 3, day, hour, min))
+                    .endAt(LocalDateTime.of(2026, 3, day, hour + 2, min))
                     .slotCapacity((int) (Math.random() * 4))
                     .isOpen(Math.random() > 0.5)
                     .build();
             Timeslot timeslot2 = Timeslot.builder()
                     .place(springDataJpaPlaceRepository.findById((long) (i + 1)).orElse(null))
-                    .startAt(LocalDateTime.of(2026, 2, day, hour + 2, min))
-                    .endAt(LocalDateTime.of(2026, 2, day, hour + 4, min))
+                    .startAt(LocalDateTime.of(2026, 3, day, hour + 2, min))
+                    .endAt(LocalDateTime.of(2026, 3, day, hour + 4, min))
                     .slotCapacity((int) (Math.random() * 4))
                     .isOpen(Math.random() > 0.5)
                     .build();
