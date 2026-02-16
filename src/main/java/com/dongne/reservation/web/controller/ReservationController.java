@@ -38,22 +38,6 @@ public class ReservationController {
                     .body(new ApiResponse<>(HttpStatus.CREATED.value(), "예약이 성공적으로 생성되었습니다.", res));
     }
 
-    @PatchMapping("/timeslots/{timeslot_id}/reservations/{reservation_id}")
-    public ResponseEntity<ApiResponse<ReservationResponse>> updateReservation(
-            @PathVariable Long place_id,
-            @PathVariable Long timeslot_id,
-            @PathVariable Long reservation_id,
-            @RequestBody UpdateReservationRequest updateReservationRequest,
-            HttpServletRequest request
-    ) {
-        String token = request.getHeader("Authorization").substring(7);
-        ReservationResponse res = reservationService.updateReservation(
-                place_id, timeslot_id, reservation_id, updateReservationRequest, token);
-
-        return ResponseEntity.ok()
-                .body(new ApiResponse<>(HttpStatus.OK.value(), "성공적으로 변경되었습니다.", res));
-    }
-
     @GetMapping("/reservations")
     public ResponseEntity<ApiResponse<List<ReservationResponse>>> getReservations(
             @PathVariable Long place_id,
