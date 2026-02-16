@@ -45,7 +45,7 @@ public class UserService {
         this.springDataJpaReservationRepository = springDataJpaReservationRepository;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public SignupResponse register(SignupRequest signupRequest) {
         // 이메일 중복 확인
         if (userRepository.findByEmail(signupRequest.getEmail()).isPresent()) {
