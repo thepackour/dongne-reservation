@@ -77,7 +77,7 @@ public class MockDataInitializer implements CommandLineRunner {
 
         // timeslot
         for (int i = 0; i < 16; i++) {
-            int day = LocalDateTime.now().getDayOfMonth() + (int) (Math.random() * 14);
+            int day = LocalDateTime.now().getDayOfMonth() + (int) (Math.random() * 12);
             int hour = (int) (Math.random() * 20);
             int min = Math.random() > 0.5 ? 0 : 30;
             Timeslot timeslot1 = Timeslot.builder()
