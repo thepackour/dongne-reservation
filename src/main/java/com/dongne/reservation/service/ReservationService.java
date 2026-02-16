@@ -84,29 +84,12 @@ public class ReservationService {
     }
 
     @Transactional
-    public ReservationResponse updateReservation(Long placeId,
-                                  Long timeslotId,
-                                  Long reservationId,
-                                  UpdateReservationRequest request,
-                                  String token) {
-        // 예외 처리 (존재하지 않는 장소)
-        if (!existsPlaceById(placeId))
-            throw new NotFoundException("장소를 찾을 수 없습니다.");
-
-        // 예외 처리 (존재하지 않는 예약 슬롯)
-        Timeslot timeslot = springDataJpaTimeslotRepository.findById(timeslotId)
-                .orElseThrow(() -> new NotFoundException("예약 슬롯을 찾을 수 없습니다."));
-
+    public ReservationResponse updateReservation(Long reservationId,
+                                                 UpdateReservationRequest request,
+                                                 String token) {
+        // 예외 처리 (존재하지 않는 예약)
         Reservation reservation = springDataJpaReservationRepository.findById(reservationId)
                 .orElseThrow(() -> new NotFoundException("예약을 찾을 수 없습니다."));
-
-        // 예외 처리 (다른 장소를 참조하는 예약 슬롯)
-        if (!timeslot.getPlace().getId().equals(placeId))
-            throw new NotFoundException("해당 장소에 속하지 않는 예약 슬롯입니다.");
-
-        // 예외 처리 (다른 예약 슬롯을 참조하는 예약)
-        if (!reservation.getTimeslot().getId().equals(timeslotId))
-            throw new NotFoundException("해당 예약 슬롯에 속하지 않는 예약입니다.");
 
         // 예외 처리 (본인 확인 실패)
         String email = jwtTokenProvider.getUsername(token);
