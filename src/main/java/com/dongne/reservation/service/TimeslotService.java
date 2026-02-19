@@ -36,7 +36,7 @@ public class TimeslotService {
         List<Timeslot> timeslotList;
         if (before != null && after != null) {
             if (after.isAfter(before)) throw new InvalidDateTimeRangeException("query parameter 'before'은 'after' 이전이어야 합니다.");
-            timeslotList = springDataJpaTimeslotRepository.findByPlaceIdAndStartAtBetween(id, before.atStartOfDay(), after.atTime(23,59,59));
+            timeslotList = springDataJpaTimeslotRepository.findByPlaceIdAndStartAtBetween(id, after.atStartOfDay(), before.atTime(23,59,59));
         } else if (before != null) {
             timeslotList = springDataJpaTimeslotRepository.findByPlaceIdAndStartAtLessThanEqual(id, before.atStartOfDay());
         } else if (after != null) {
