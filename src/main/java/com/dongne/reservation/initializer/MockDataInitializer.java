@@ -92,7 +92,7 @@ public class MockDataInitializer implements CommandLineRunner {
                     .place(springDataJpaPlaceRepository.findById((long) (i + 1)).orElse(null))
                     .startAt(LocalDateTime.of(2026, 3, day, hour + 2, min))
                     .endAt(LocalDateTime.of(2026, 3, day, hour + 4, min))
-                    .slotCapacity((int) (Math.random() * 4))
+                    .slotCapacity((int) (Math.random() * 4 + 1))
                     .isOpen(Math.random() > 0.5)
                     .build();
             springDataJpaTimeslotRepository.save(timeslot1);
