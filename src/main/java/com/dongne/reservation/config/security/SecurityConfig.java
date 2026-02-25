@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -29,11 +28,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                //.formLogin(formLogin -> formLogin.disable())
-                //.formLogin(form -> form.loginProcessingUrl("/users/login"))
-                .httpBasic(httpBasic -> httpBasic.disable())    // 기본 인증 비활성화
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/users/signup", "/users/login", "/swagger-ui/**", "/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/places/*/timeslots").hasAuthority("ADMIN")
@@ -47,12 +43,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    CorsConfigurationSource corsConfigurationSource() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
 
         // 인증정보 주고받도록 허용
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        config.setAllowedOrigins(List.of("http://localhost:3000", "https://reservation.sublumen.xyz"));
         config.setAllowedMethods(List.of("GET", "POST", "PATCH", "DELETE", "PUT"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));
