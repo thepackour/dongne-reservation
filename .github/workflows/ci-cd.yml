@@ -47,7 +47,8 @@ jobs:
       run: |
         echo "$AWS_PRIVATE_KEY" > private_key.pem
         chmod 600 private_key.pem
-        scp -o StrictHostKeyChecking=no -i private_key.pem build/libs/*.jar $AWS_USER@$AWS_HOST:/home/$AWS_USER/dongne-reservation/reservation.jar
+        scp -o StrictHostKeyChecking=no -i private_key.pem build/libs/*.jar $AWS_USER@$AWS_HOST:/home/$AWS_USER/dongne-reservation/
+        scp -o StrictHostKeyChecking=no -i private_key.pem build/libs/reservation-0.0.1-SNAPSHOT.jar $AWS_USER@$AWS_HOST:/home/$AWS_USER/dongne-reservation/reservation.jar
         ssh -o StrictHostKeyChecking=no -i private_key.pem $AWS_USER@$AWS_HOST "
           sudo systemctl stop reservation || true
           sudo systemctl start reservation
