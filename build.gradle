@@ -53,6 +53,10 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+jar {
+	archiveBaseName = 'reservation'
+	archiveVersion = ''
+}
 
 tasks.named('test') {
 	useJUnitPlatform()
