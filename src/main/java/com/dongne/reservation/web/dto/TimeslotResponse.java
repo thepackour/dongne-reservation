@@ -3,10 +3,7 @@ package com.dongne.reservation.web.dto;
 import com.dongne.reservation.domain.Place;
 import com.dongne.reservation.domain.Timeslot;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 public class TimeslotResponse {
     @NotNull
     private Long id;

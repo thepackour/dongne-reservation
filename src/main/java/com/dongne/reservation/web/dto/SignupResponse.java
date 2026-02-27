@@ -10,6 +10,7 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Data // 객체 간 필드 비교 때문에 넣음
 public class SignupResponse {
     @NotNull
     private Long id;

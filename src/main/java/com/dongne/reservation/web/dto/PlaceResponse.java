@@ -1,15 +1,13 @@
 package com.dongne.reservation.web.dto;
 
 import com.dongne.reservation.domain.Place;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class PlaceResponse {
     private Long id;
     private String name;
