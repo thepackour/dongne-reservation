@@ -44,7 +44,7 @@ jobs:
       run: |
         echo "$AWS_PRIVATE_KEY" > private_key.pem
         chmod 600 private_key.pem
-        scp -o StrictHostKeyChecking=no -i private_key.pem build/libs/*.jar $AWS_USER@$AWS_HOST:/home/$AWS_USER/reservation.jar
+        scp -o StrictHostKeyChecking=no -i private_key.pem build/libs/*.jar $AWS_USER@$AWS_HOST:/home/$AWS_USER/dongne-reservation/reservation.jar
         ssh -o StrictHostKeyChecking=no -i private_key.pem $AWS_USER@$AWS_HOST "
           sudo systemctl stop reservation || true
           sudo systemctl start reservation
@@ -64,38 +64,20 @@ jobs:
 #   run: gradle build
 
 
-dependency-submission:
-  runs-on: ubuntu-latest
-  permissions:
-    contents: write
-
-  steps:
-  - uses: actions/checkout@v4
-  - name: Set up JDK 21
-    uses: actions/setup-java@v4
-    with:
-      java-version: '21'
-      distribution: 'temurin'
+  dependency-submission:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
   
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+    
 # Generates and submits a dependency graph, enabling Dependabot Alerts for all project dependencies.
 # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
-  - name: Generate and submit dependency graph
-    uses: gradle/actions/dependency-submission@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-이거 맞지?
+    - name: Generate and submit dependency graph
+      uses: gradle/actions/dependency-submission@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
